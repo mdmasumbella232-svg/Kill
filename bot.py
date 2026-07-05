@@ -65,10 +65,13 @@ def main():
                             continue
 
                 if not telegram_bot.has_active_bet():
+                    print(f"Checking for picks (no active bet)...")
                     for sport_id in [1, 18]:
                         try:
                             picks = predictor.filter_picks(sport_id)
+                            print(f"Sport {sport_id} picks found: {len(picks)}")
                             if picks:
+                                print(f"Sending pick alert: {picks[0]}")
                                 telegram_bot.send_alert(picks[0])
                                 break
                         except Exception as e:
@@ -76,6 +79,8 @@ def main():
                             print(error_msg)
                             telegram_bot.send_error(error_msg)
                             continue
+                else:
+                    print(f"Active bet is still tracked: {telegram_bot.active_bet}")
 
             except Exception as e:
                 error_msg = f"Main loop error: {str(e)}"
