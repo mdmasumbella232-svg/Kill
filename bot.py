@@ -33,12 +33,12 @@ def main():
     predictor = Predictor()
     telegram_bot = TelegramBot()
 
-    print("Bot started! Monitoring matches... Press Ctrl+C to stop.")
+    print("Bot started! Monitoring matches... Press Ctrl+C to stop.", flush=True)
     # Send a test message to confirm bot is running
     try:
         telegram_bot.send_message("✅ Predictor Bot has started! Monitoring soccer and basketball matches for picks...")
     except Exception as e:
-        print(f"Failed to send startup test message: {e}")
+        print(f"Failed to send startup test message: {e}", flush=True)
 
     try:
         while True:
@@ -60,40 +60,40 @@ def main():
                                     break
                         except Exception as e:
                             error_msg = f"Error checking finished games (sport {sport_id}): {str(e)}"
-                            print(error_msg)
+                            print(error_msg, flush=True)
                             telegram_bot.send_error(error_msg)
                             continue
 
                 if not telegram_bot.has_active_bet():
-                    print(f"Checking for picks (no active bet)...")
+                    print(f"Checking for picks (no active bet)...", flush=True)
                     for sport_id in [1, 18]:
                         try:
                             picks = predictor.filter_picks(sport_id)
-                            print(f"Sport {sport_id} picks found: {len(picks)}")
+                            print(f"Sport {sport_id} picks found: {len(picks)}", flush=True)
                             if picks:
-                                print(f"Sending pick alert: {picks[0]}")
+                                print(f"Sending pick alert: {picks[0]}", flush=True)
                                 telegram_bot.send_alert(picks[0])
                                 break
                         except Exception as e:
                             error_msg = f"Error checking picks (sport {sport_id}): {str(e)}"
-                            print(error_msg)
+                            print(error_msg, flush=True)
                             telegram_bot.send_error(error_msg)
                             continue
                 else:
-                    print(f"Active bet is still tracked: {telegram_bot.active_bet}")
+                    print(f"Active bet is still tracked: {telegram_bot.active_bet}", flush=True)
 
             except Exception as e:
                 error_msg = f"Main loop error: {str(e)}"
-                print(error_msg)
+                print(error_msg, flush=True)
                 telegram_bot.send_error(error_msg)
 
             time.sleep(60)
     except KeyboardInterrupt:
-        print("\nBot stopped by user.")
+        print("\nBot stopped by user.", flush=True)
         try:
             telegram_bot.send_message("🛑 Predictor Bot has been stopped by user.")
         except Exception as e:
-            print(f"Failed to send shutdown message: {e}")
+            print(f"Failed to send shutdown message: {e}", flush=True)
 
 
 if __name__ == "__main__":
