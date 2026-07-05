@@ -11,9 +11,9 @@ HEADERS = {
 
 # Retry configuration
 MAX_RETRIES = 3
-RETRY_DELAY = 2  # seconds between retries
-MIN_DELAY_BETWEEN_CALLS = 0.5  # minimum random delay between API calls
-MAX_DELAY_BETWEEN_CALLS = 1.5  # maximum random delay between API calls
+RETRY_DELAY = 5  # seconds between retries
+MIN_DELAY_BETWEEN_CALLS = 1.0  # minimum random delay between API calls
+MAX_DELAY_BETWEEN_CALLS = 3.0  # maximum random delay between API calls
 
 # Track last call time to add delays
 _last_call_time = 0
