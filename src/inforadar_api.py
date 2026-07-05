@@ -36,7 +36,7 @@ def _make_api_request(url, params):
     _add_random_delay()
     for attempt in range(MAX_RETRIES):
         try:
-            response = requests.get(url, params=params, headers=HEADERS, timeout=10)
+            response = requests.get(url, params=params, headers=HEADERS, timeout=30)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
