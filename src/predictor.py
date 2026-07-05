@@ -95,23 +95,33 @@ class Predictor:
         picks = []
         # Check only live games
         for game_type, get_games in [("live", get_live_games)]:
+            print(f"Getting {game_type} games for sport {sport_id}...", flush=True)
             games_response = get_games(sport_id)
             if not games_response or games_response.get("success") != 1:
+                print(f"Failed to get games for sport {sport_id}!", flush=True)
                 continue
             games = games_response.get("results", [])
+            print(f"Got {len(games)} {game_type} games for sport {sport_id}", flush=True)
             for game in games:
                 event_id = game.get("id")
+                home = game.get("home", {}).get("name", "Unknown")
+                away = game.get("away", {}).get("name", "Unknown")
+                print(f"Checking game {event_id}: {home} vs {away}", flush=True)
                 if not event_id:
                     continue
                 try:
                     odds_data = get_game_odds(sport_id, event_id)
-                except Exception:
+                    print(f"Got odds data for {home} vs {away}: {len(odds_data) if odds_data else 0} markets", flush=True)
+                except Exception as e:
+                    print(f"Error getting odds for {home} vs {away}: {e}", flush=True)
                     continue
                 self.update_odds_history(event_id, odds_data)
                 # For prematch games, skip timing window check
                 if game_type == "live" and not self.is_in_timing_window(game, sport_id):
+                    print(f"Game {home} vs {away} not in timing window, skipping", flush=True)
                     continue
                 drop_detected, pred_type, prediction, odds = self.check_odds_drop(event_id, odds_data)
+                print(f"Drop detected for {home} vs {away}: {drop_detected} (odds: {odds})", flush=True)
                 if drop_detected and 1.7 <= odds <= 2.2:
                     home_team = game.get("home", {}).get("name", "Unknown")
                     away_team = game.get("away", {}).get("name", "Unknown")
