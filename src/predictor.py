@@ -93,8 +93,8 @@ class Predictor:
 
     def filter_picks(self, sport_id):
         picks = []
-        # Check both live and prematch games
-        for game_type, get_games in [("live", get_live_games), ("prematch", get_prematch_games)]:
+        # Check only live games
+        for game_type, get_games in [("live", get_live_games)]:
             games_response = get_games(sport_id)
             if not games_response or games_response.get("success") != 1:
                 continue
